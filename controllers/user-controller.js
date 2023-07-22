@@ -1,3 +1,4 @@
+const e = require('express')
 const { User, Thought } = require('../models')
 
 // Define the UserController object
@@ -7,19 +8,19 @@ const UserController = {
   async usersGetAll(req, res) {
     try {
       const userData = await User.find({}).select('-__v')
-      res.json(userData)
+      res.status(200).json(userData)
     } catch (err) {
       res.status(500).json({ err, message: 'Could not retrieve the users' })
     }
   },
 
-  async usersGetAll_Populated(req, res) {
+  async usersGetAllPopulated(req, res) {
     try {
       const userData = await User.find({})
         .select('-__v')
         .populate('thoughts')
         .populate('friends')
-      res.json(userData)
+      res.status(200).json(userData)
     } catch (err) {
       res.status(500).json({ err, message: 'Could not retrieve the users' })
     }
@@ -31,7 +32,11 @@ const UserController = {
         .select('-__v')
         .populate('thoughts')
         .populate('friends')
-      res.json(userData)
+      if (!userData) {
+        return res.status(404).json({ message: 'User not found' })
+      } else {
+        res.status(200).json(userData)
+      }
     } catch (err) {
       res.status(404).json({ err, message: 'Could not find user with this id' })
     }
@@ -40,7 +45,7 @@ const UserController = {
   async userCreate(req, res) {
     try {
       const userData = await User.create(req.body)
-      res.json(userData)
+      res.status(200).json(userData)
     } catch (err) {
       res.status(500).json({ err, message: 'Could not create user' })
     }
@@ -49,7 +54,7 @@ const UserController = {
   async userUpdateById(req, res) {
     try {
       // find the user
-      const userData = await User.findById(req.params.id)
+      const userData = await User.findById(req.params.userId)
       if (!userData) {
         return res.status(404).json({ message: 'User not found' })
       }
@@ -92,9 +97,15 @@ const UserController = {
           { username: req.body.username },
           { runValidators: true, new: true }
         )
+        res.status(200).json({
+          userData,
+          // eslint-disable-next-line quotes
+          message:
+            "User updated successfully and their Thoughts' username updated if applicable",
+        })
+      } else {
+        res.status(200).json({ userData, message: 'User updated successfully' })
       }
-
-      res.status(200).json({ userData, message: 'User updated successfully' })
     } catch (err) {
       res.status(500).json({ err, message: 'An error occurred updating user' })
     }
@@ -130,7 +141,11 @@ const UserController = {
       await User.deleteOne({ _id: req.params.userId })
 
       // return success
-      res.status(200).json({ message: 'User deleted successfully' })
+
+      res.status(200).json({
+        message:
+          "User deleted successfully, their Thoughts deleted if any, and the user was deleted from other users' friends lists if applicable",
+      })
     } catch (err) {
       res.status(500).json({ err, message: 'An error occurred deleting user' })
     }
@@ -140,13 +155,15 @@ const UserController = {
     try {
       const userData = await User.findOneAndUpdate(
         { _id: req.params.userId },
-        { $addToSet: { friends: req.body.friendId || req.params.friendId } },
-        { new: true , runValidators: true}
+        { $addToSet: { friends: req.params.friendId } },
+        { new: true, runValidators: true }
       )
       if (!userData) {
         return res.status(404).json({ message: 'User not found' })
       }
-      res.json(userData)
+      res
+        .status(200)
+        .json({ message: 'Friend Added to User successfully', userData })
     } catch (err) {
       res.status(500).json({ err, message: 'An error occurred adding friend' })
     }
@@ -166,12 +183,14 @@ const UserController = {
       const removed = !dbUserData.friends.includes(params.friendId)
       // return response with appropriate message
       if (removed) {
-        res.json({
+        res.status(200).json({
           message: 'Friend removed from Friend List successfully',
           dbUserData,
         })
       } else {
-        res.json(dbUserData)
+        res
+          .status(500)
+          .json({ dbUserData, message: 'An error occurred removing friend' })
       }
     } catch (err) {
       res

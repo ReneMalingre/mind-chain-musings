@@ -29,7 +29,7 @@ const reactionSchema = new Schema(
     toJSON: {
       getters: true,
     },
-    id: false,
+    _id: false, // disable the automatic _id field
   }
 )
 

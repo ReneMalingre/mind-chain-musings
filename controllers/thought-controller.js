@@ -7,7 +7,7 @@ const ThoughtController = {
   async thoughtsGetAll(req, res) {
     try {
       const thoughts = await Thought.find({}).select('-__v')
-      res.json(thoughts)
+      res.status(200).json(thoughts)
     } catch (err) {
       res
         .status(500)
@@ -23,7 +23,7 @@ const ThoughtController = {
       if (!thought) {
         res.status(404).json({ message: 'Thought not found' })
       } else {
-        res.json(thought)
+        res.status(200).json(thought)
       }
     } catch (err) {
       res
@@ -42,11 +42,11 @@ const ThoughtController = {
       }
 
       // ensure the user exists
-      const userData=User.findById(userID)
+      const userData = User.findById(userID)
       if (!userData) {
         return res.status(404).json({ message: 'User not found' })
       }
-      
+
       // create the thought
       const thought = await Thought.create(req.body)
 
@@ -77,7 +77,7 @@ const ThoughtController = {
       if (!thought) {
         res.status(404).json({ message: 'Thought not found' })
       } else {
-        res.json(thought)
+        res.status(200).json(thought)
       }
     } catch (err) {
       res
@@ -91,7 +91,11 @@ const ThoughtController = {
       const thought = await Thought.findByIdAndDelete({
         _id: req.params.thoughtId,
       })
-      res.status(200).json(thought)
+      if (!thought) {
+        res.status(404).json({ message: 'Thought not found' })
+      } else {
+        res.status(200).json({ thought, message: 'Thought deleted' })
+      }
     } catch (err) {
       res
         .status(500)
@@ -106,27 +110,33 @@ const ThoughtController = {
         { $addToSet: { reactions: req.body } },
         { runValidators: true, new: true }
       )
-      thought
-        ? res.json(thought)
-        : res.status(404).json({ message: 'Thought not found' })
-    } catch (e) {
-      res.status(500).json(e)
+      if (thought) {
+        res.status(200).json(thought)
+      } else {
+        res.status(404).json({ message: 'Thought not found' })
+      }
+    } catch (err) {
+      res.status(500).json({err, message: 'An error occurred creating a reaction'})
     }
   },
 
   async reactionDeleteById(req, res) {
     try {
+      console.log(req.params)
+      console.log(req.body)
       const thought = await Thought.findOneAndUpdate(
         { _id: req.params.thoughtId },
-        { $pull: { reactions: { reactionId: req.params.reactionId } } },
+        { $pull: { reactions: { reactionId: req.body.reactionId } } },
         { runValidators: true, new: true }
-      )
+      ).select('-__v')
 
-      thought
-        ? res.json(thought)
-        : res.status(404).json({ message: 'Thought not found' })
-    } catch (e) {
-      res.status(500).json(e)
+      if (thought) {
+        res.status(200).json(thought)
+      } else {
+        res.status(404).json({ message: 'Thought not found' })
+      }
+    } catch (err) {
+      res.status(500).json({err, message: 'An error occurred deleting a reaction'})
     }
   },
 }
