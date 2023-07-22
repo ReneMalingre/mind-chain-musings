@@ -22,9 +22,10 @@ router
   .delete(thoughtDeleteById)
 
 // Define the route for POST reaction to a Thought
-router.route('/:thoughtId/reactions').post(reactionCreateByThoughtId)
+router
+  .route('/:thoughtId/reactions')
+  .post(reactionCreateByThoughtId)
+  .delete(reactionDeleteById)
 
-// Define the route for DELETE reaction to a Thought
-router.route('/:thoughtId/reactions/:reactionId').delete(reactionDeleteById)
 // Export the router
 module.exports = router

@@ -56,7 +56,7 @@ async function seedDB() {
         { reactionBody: 'Congratulations!', username: users[1].username },
         { reactionBody: 'Well done!', username: users[3].username },
         // eslint-disable-next-line prettier/prettier
-        { reactionBody: 'That\'s great!', username: users[0].username },
+        { reactionBody: "That's great!", username: users[0].username },
       ],
     },
     {

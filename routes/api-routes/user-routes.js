@@ -2,7 +2,7 @@
 const router = require('express').Router()
 const {
   usersGetAll,
-  usersGetAll_Populated,
+  usersGetAllPopulated,
   userGetById,
   userCreate,
   userUpdateById,
@@ -15,7 +15,7 @@ const {
 router.route('/').get(usersGetAll).post(userCreate)
 
 // Users route with populated thoughts and friends (bonus)
-router.route('/populated').get(usersGetAll_Populated)
+router.route('/populated').get(usersGetAllPopulated)
 
 // Single user routes
 router
