@@ -116,14 +116,14 @@ const ThoughtController = {
         res.status(404).json({ message: 'Thought not found' })
       }
     } catch (err) {
-      res.status(500).json({err, message: 'An error occurred creating a reaction'})
+      res
+        .status(500)
+        .json({ err, message: 'An error occurred creating a reaction' })
     }
   },
 
   async reactionDeleteById(req, res) {
     try {
-      console.log(req.params)
-      console.log(req.body)
       const thought = await Thought.findOneAndUpdate(
         { _id: req.params.thoughtId },
         { $pull: { reactions: { reactionId: req.body.reactionId } } },
@@ -136,7 +136,9 @@ const ThoughtController = {
         res.status(404).json({ message: 'Thought not found' })
       }
     } catch (err) {
-      res.status(500).json({err, message: 'An error occurred deleting a reaction'})
+      res
+        .status(500)
+        .json({ err, message: 'An error occurred deleting a reaction' })
     }
   },
 }

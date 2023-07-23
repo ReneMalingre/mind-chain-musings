@@ -2,7 +2,7 @@
 
 ## Description
 
- [![MIT License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![MIT License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 A social network api using a NoSQL data model
 
@@ -31,7 +31,7 @@ This application is not deployed, but can be run locally by following the instal
 
 Here is a link to a video demonstrating the api routes in Insomnia:
 
-Video Link: [Mind-Chain Musings](https://drive.google.com/file/d/1Q4Q8Z3Q4Z3Z3Z3Z3Z3Z3Z3Z3Z3Z3Z3Z/view)
+Video Link: [Mind-Chain Musings](https://drive.google.com/file/d/1RmCt2PKMkoqc6ZETbNPkceWNaLfz-ISG/view?usp=sharing)
 
 Screenshot of the application retrieving a User in Insomnia:
 
@@ -39,13 +39,13 @@ Screenshot of the application retrieving a User in Insomnia:
 
 The API routes are as follows, adding to your base server url. Examine the code and model to see what body data is required for each route.:
 
-```bash
+```
 http://yourserverroute/ eg http://localhost:3001/
 ```
 
 ### User Routes
 
-```bash
+```
 GET ../api/users - returns all users
 GET ../api/users/populated - returns all users with their friends and thoughts
 GET ../api/users/:userId - returns a single user by id with their friends and thoughts
@@ -59,7 +59,7 @@ DELETE ../api/users/:userId/friends/:friendId - deletes a friend from a user fri
 
 ### Thought Routes
 
-```bash
+```
 GET ../api/thoughts - returns all thoughts
 POST ../api/thoughts - creates a new thought for a user by id
 GET ../api/thoughts/:thoughtId - returns a single thought by id
@@ -69,7 +69,7 @@ DELETE ../api/thoughts/:thoughtId - deletes a thought by id
 
 #### Reaction Routes
 
-```bash
+```
 POST ../api/thoughts/:thoughtId/reactions - adds a reaction to a thought by thought id
 DELETE ../api/thoughts/:thoughtId/reactions - deletes a reaction from a thought
 ```
@@ -86,7 +86,7 @@ npm install
 
 4. Create a .env file in the root directory of the application and add the following code, replacing the placeholder with your own MongoDB database name:
 
-```bash
+```
 MONGODB_URI=mongodb://127.0.0.1:27017/mindchain
 ```
 

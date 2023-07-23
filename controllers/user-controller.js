@@ -1,4 +1,3 @@
-const e = require('express')
 const { User, Thought } = require('../models')
 
 // Define the UserController object
@@ -87,7 +86,7 @@ const UserController = {
       }
 
       // Update the user
-      await userData.save()
+      await userData.save({ runValidators: true, new: true})
 
       // If the username has changed, update the username in the thoughts
       if (changeUserName) {
